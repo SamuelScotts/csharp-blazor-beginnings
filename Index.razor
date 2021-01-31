@@ -1,0 +1,87 @@
+﻿@page "/"
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+
+        <h2>To Do:</h2>
+        <input placeholder="Enter a title" @bind="newTodoTitle" />
+        <input placeholder="Enter a headline" @bind="newTodoHeadline" />
+        <button class="btn btn-primary" @onclick="AddTask">Add Task</button>
+
+
+        @for(int i = 0; i < tasks.Count; i++)
+        {
+        int buffer = i;
+        <div class="card" style="width: 18rem; margin-top: 10px;" @onclick="() => displayCurrentTask(buffer)">
+            <div class="card-body">
+                <h5 class="card-title">@tasks[i].title</h5>
+                <p class="card-text">@tasks[i].headline</p>
+            </div>
+        </div>
+        }
+
+    </div>
+    <div class="col">
+        @for(int i = 0; i < tasks.Count; i++)
+        {
+            if (currentTask == i)
+            {
+                <div class="card" style="width: 18rem; margin-top: 10px;">
+                    <div class="card-body">
+                        <h5 class="card-title">@tasks[i].title</h5>
+                        <p class="card-text">@tasks[i].headline</p>
+                        <button class="btn btn-primary" @onclick="delete">Delete Task</button>
+                    </div>
+                </div> 
+            }
+        }
+    </div>
+  </div>
+</div>
+
+
+@code {
+
+    private int currentTask;
+    private string newTodoTitle;
+    private string newTodoHeadline;
+
+    public class Task
+    {
+        public string title;
+        public string headline;
+    }
+
+    List<Task> tasks = new List<Task>(){
+                new Task(){ title = "Site Structure", headline = "Work on developing the site layout." },
+                new Task(){ title = "Understand C#", headline = "Start to fully understand the C# methodology" },
+        };
+
+    private void AddTask()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodoTitle) && !string.IsNullOrWhiteSpace(newTodoHeadline))
+        {
+            tasks.Add(new Task(){ title = newTodoTitle, headline = newTodoHeadline });
+            newTodoTitle = string.Empty;
+            newTodoHeadline = string.Empty;
+        }
+    }
+
+    private void displayCurrentTask(int task)
+    {
+        currentTask = task;
+    }
+
+    private void delete()
+    {
+        for(int i = 0; i < tasks.Count; i++)
+        {
+           if (currentTask == i)
+           {
+               tasks.Remove(tasks[i]);
+           } 
+        }
+    }
+
+}
